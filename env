@@ -49,17 +49,17 @@
 # DATABASE
 #--------------------------------------------------------------------
 
-# database.default.hostname = localhost
-# database.default.database = ci4
-# database.default.username = root
-# database.default.password = root
-# database.default.DBDriver = MySQLi
+database.default.hostname = localhost
+database.default.database = news_portal_backbone
+database.default.username = root
+database.default.password = arjprd12
+database.default.DBDriver = MySQLi
 
-# database.tests.hostname = localhost
-# database.tests.database = ci4
-# database.tests.username = root
-# database.tests.password = root
-# database.tests.DBDriver = MySQLi
+database.tests.hostname = localhost
+database.tests.database = news_portal_temp
+database.tests.username = root
+database.tests.password = arjprd12
+database.tests.DBDriver = MySQLi
 
 #--------------------------------------------------------------------
 # CONTENT SECURITY POLICY
