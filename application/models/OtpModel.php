@@ -16,4 +16,15 @@ class OtpModel extends CI_Model
 
     }
 
+    public function delete( $mobile ){
+
+        $this->db->where('mobile', $mobile);
+
+        if( $this->db->delete('mobile_verification') )
+            return true;
+
+        return false;
+
+    }
+
 }

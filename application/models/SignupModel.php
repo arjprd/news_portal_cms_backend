@@ -64,4 +64,31 @@ class SignupModel extends CI_Model {
 
         }
 
+        public function deleteBefore( $timestamp ){
+
+            $this->db->where('lastupdated <', $timestamp);
+            $query = $this->db->get('signup');
+
+            $data = $query->result_array();
+
+            $deleted = [];
+
+            foreach( $data as $row ){
+
+                $this->MailHashModel->delete( $row['email_id'] );
+                $this->OtpModel->delete( $row['mobile'] );
+                array_push( $deleted, [ $row['email_id'], $row['mobile'] ] );
+
+            }
+
+
+            $this->db->where('lastupdated <', $timestamp);
+
+            if( $this->db->delete('signup') )
+                return $deleted;
+
+            return false;
+
+        }
+
 }
