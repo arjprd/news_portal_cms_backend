@@ -64,22 +64,26 @@ class SignupModel extends CI_Model {
 
         }
 
-        public function removeUser($email){
+        public function getUser($email){
             
             $this->db->where("email_id", $email);
             $query = $this->db->get("signup");
             
             $result = $query->result_array(); 
             
-            if(count($result)){
-                $this->db->where("email_id", $email);
-            
-                $this->db->delete("signup");
-
+            if(count($result))
                 return $result[0];
-            }
             
-            return [];
+            
+            
+                return [];
+        }
+
+        public function removeUser($email){
+            
+            $this->db->where("email_id", $email);
+            
+            return $this->db->delete("signup");
         }
 
 }

@@ -26,26 +26,21 @@ class Authentication extends BaseController
 
         if( $this->isMethod('GET') ){
             
-            $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-            
-            $url_components = parse_url($actual_link);
-            
-            parse_str($url_components['query'], $params);
-            
-            $email = $params['email'];
-            $v_key = $params['verification_key'];
+            $email = $_GET['email'];
+            $v_key = $_GET['verification_key'];
 
             if($this->MailHashModel->isUserPresent($email, $v_key)){
 
 
-                $result = $this->SignupModel->removeUser($email);
-                
-                $this->MailHashModel->remove($email);
-
+                $result = $this->SignupModel->getUser($email);
 
                 if(count($result)){
                     if($this->UserAccountModel->add($result)){
-                    
+                        
+                        $this->MailHashModel->remove($email);
+
+                        $this->SignupModel->removeUser($email);
+
                         $data['statusCode'] = 200;
                         $data['message'] = 'Successful';
     
@@ -56,8 +51,6 @@ class Authentication extends BaseController
                     }
                 }
             }
-
-            // var_dump($this->request_data);
 
         }
 
