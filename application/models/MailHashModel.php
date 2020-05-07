@@ -17,14 +17,4 @@ class MailHashModel extends CI_Model
 
     }
 
-    public function delete( $email ){
-
-        $this->db->where('email_id', $email);
-
-        if( $this->db->delete('email_verification') )
-            return true;
-
-        return false;
-    }
-
 }
