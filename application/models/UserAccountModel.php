@@ -32,4 +32,17 @@ class UserAccountModel extends CI_Model
 
     }
 
+    public function add($data){
+
+        $data["mobile_verified"] = "0";
+        
+        unset($data['lastupdated']);
+        
+        if($this->db->insert("user_account", $data)){
+            return true;
+        }
+
+        return false;
+    }
+
 }

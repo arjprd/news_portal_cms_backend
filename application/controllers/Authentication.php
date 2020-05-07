@@ -11,6 +11,7 @@ class Authentication extends BaseController
         parent::__construct();
         $this->load->model('SignupModel');
         $this->load->model('UserAccountModel');
+        $this->load->model('MailHashModel');
         $this->load->helper('url');
         $this->load->helper('common_helper');
 
@@ -23,10 +24,40 @@ class Authentication extends BaseController
 			'message' => 'Bad Request'
         ];
 
-
         if( $this->isMethod('GET') ){
+            
+            $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            
+            $url_components = parse_url($actual_link);
+            
+            parse_str($url_components['query'], $params);
+            
+            $email = $params['email'];
+            $v_key = $params['verification_key'];
 
-            var_dump($this->request_data);
+            if($this->MailHashModel->isUserPresent($email, $v_key)){
+
+
+                $result = $this->SignupModel->removeUser($email);
+                
+                $this->MailHashModel->remove($email);
+
+
+                if(count($result)){
+                    if($this->UserAccountModel->add($result)){
+                    
+                        $data['statusCode'] = 200;
+                        $data['message'] = 'Successful';
+    
+                        return $this->output
+                            ->set_status_header(200)
+                            ->set_content_type('application/json')
+                            ->set_output(json_encode($data));
+                    }
+                }
+            }
+
+            // var_dump($this->request_data);
 
         }
 
@@ -44,7 +75,7 @@ class Authentication extends BaseController
 			'statusCode' => 400,
 			'message' => 'Bad Request'
         ];
-
+        
         $required = [
 
             "email" => "email id not provided!",
@@ -63,6 +94,7 @@ class Authentication extends BaseController
 
         
         if( $this->isMethod('PUT') ){
+            
 
             $request = [];
             
@@ -178,7 +210,7 @@ class Authentication extends BaseController
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));
 		
-	}
+    }
 
 
 }
