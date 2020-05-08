@@ -1,35 +1,46 @@
-<?php 
+<?php
 
 class UserAccountModel extends CI_Model
-{
+ {
 
     public function __construct()
-    {
-            $this->db = $this->load->database('default', true);
+ {
+        $this->db = $this->load->database( 'default', true );
     }
 
-    public function isEmailIn( $email ){
+    public function isEmailIn( $email ) {
 
-        $this->db->where('email_id', $email);
-        $query = $this->db->get('user_account');
+        $this->db->where( 'email_id', $email );
+        $query = $this->db->get( 'user_account' );
 
-        if( count( $query->result_array() ) )
-            return true;
-        
+        if ( count( $query->result_array() ) )
+        return true;
+
         return false;
- 
+
     }
 
-    public function isMobileIn( $mobile ){
+    public function isMobileIn( $mobile ) {
 
-        $this->db->where('mobile', $mobile);
-        $query = $this->db->get('user_account');
-        
-        if( count( $query->result_array() ) )
-            return true;
-        
+        $this->db->where( 'mobile', $mobile );
+        $query = $this->db->get( 'user_account' );
+
+        if ( count( $query->result_array() ) )
+        return true;
+
         return false;
 
+    }
+
+    public function add( $data ) {
+
+        unset( $data['lastupdated'] );
+
+        if ( $this->db->insert( 'user_account', $data ) ) {
+            return true;
+        }
+
+        return false;
     }
 
 }
