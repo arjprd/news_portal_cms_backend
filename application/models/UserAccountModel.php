@@ -5,7 +5,9 @@ class UserAccountModel extends CI_Model
 
     public function __construct()
     {
+
             $this->db = $this->load->database('default', true);
+            
     }
 
     public function isEmailIn( $email ){
@@ -28,6 +30,20 @@ class UserAccountModel extends CI_Model
         if( count( $query->result_array() ) )
             return true;
         
+        return false;
+
+    }
+
+    public function add( $data ) {
+
+        unset( $data['lastupdated'] );
+
+        if ( $this->db->insert( 'user_account', $data ) ) {
+
+            return true;
+
+        }
+
         return false;
 
     }

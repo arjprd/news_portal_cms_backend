@@ -1,9 +1,9 @@
 <?php 
 
-require_once "BaseController.php";
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Authentication extends BaseController
+use \Firebase\JWT\JWT;
+class Signup extends CI_Controller
 {
 
     public function __construct(){
@@ -12,37 +12,17 @@ class Authentication extends BaseController
         $this->load->model('SignupModel');
         $this->load->model('UserAccountModel');
         $this->load->helper('url');
-        $this->load->helper('common_helper');
+
+        access_token_check();
 
     }
 
-    public function verify_signup(){
-
-        $data = [
-			'statusCode' => 400,
-			'message' => 'Bad Request'
-        ];
-
-
-        if( $this->isMethod('GET') ){
-
-            var_dump($this->request_data);
-
-        }
-
-        return $this->output
-                    ->set_status_header(400)
-                    ->set_content_type('application/json')
-                    ->set_output(json_encode($data));
-
-    }
-
-	public function signup()
+	public function index()
 	{
 
 		$data = [
-			'statusCode' => 400,
-			'message' => 'Bad Request'
+			'statusCode' => 405,
+			'message' => 'Method Not Allowed'
         ];
 
         $required = [
@@ -62,13 +42,12 @@ class Authentication extends BaseController
         $parameters = [ "email", "password", "mobile", "pin", "city", "state", "country", "street", "name"];
 
         
-        if( $this->isMethod('PUT') ){
+        if( $this->request_data = isMethod('PUT') ){
 
             $request = [];
             
             foreach( $parameters as $key ){
 
-               
                 if( !empty($this->request_data[$key]) ){
 
                     $request[$key] = $this->request_data[$key];
@@ -83,8 +62,6 @@ class Authentication extends BaseController
 
                 }
 
-                
-
             }
 
             $request['lastupdated'] = time();
@@ -92,10 +69,10 @@ class Authentication extends BaseController
 
             if( !empty($data['error']) ){
 
-                $data['statusCode'] = 401;
+                $data['statusCode'] = 4121;
                 $data['message'] = 'Required data missing';
                 return $this->output
-                    ->set_status_header(401)
+                    ->set_status_header(412)
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));
 
@@ -103,37 +80,37 @@ class Authentication extends BaseController
 
                 if( $this->UserAccountModel->isMobileIn($request['mobile']) ){
                     
-                    $data['statusCode'] = 405;
+                    $data['statusCode'] = 4122;
                     $data['message'] = 'Mobile number already in use';
                     return $this->output
-                                ->set_status_header(405)
+                                ->set_status_header(412)
                                 ->set_content_type('application/json')
                                 ->set_output(json_encode($data));
 
                 }else if( $this->SignupModel->isMobileIn($request['mobile']) ){
                     
-                    $data['statusCode'] = 404;
+                    $data['statusCode'] = 4122;
                     $data['message'] = 'Mobile number already in use, verify email';
                     return $this->output
-                                ->set_status_header(404)
+                                ->set_status_header(412)
                                 ->set_content_type('application/json')
                                 ->set_output(json_encode($data));
 
                 }else if( $this->UserAccountModel->isEmailIn($request['email']) ){
 
-                    $data['statusCode'] = 403;
+                    $data['statusCode'] = 4122;
                     $data['message'] = 'Email already in use, sign in';
                     return $this->output
-                                ->set_status_header(403)
+                                ->set_status_header(412)
                                 ->set_content_type('application/json')
                                 ->set_output(json_encode($data));
 
                 }else if( $this->SignupModel->isEmailIn($request['email']) ){
 
-                    $data['statusCode'] = 402;
+                    $data['statusCode'] = 4122;
                     $data['message'] = 'Email already in use, verify email';
                     return $this->output
-                                ->set_status_header(402)
+                                ->set_status_header(412)
                                 ->set_content_type('application/json')
                                 ->set_output(json_encode($data));
 
@@ -142,7 +119,7 @@ class Authentication extends BaseController
                     $otp = generateNumericOTP();
                     $mail_hash = sha1("$request[email]$otp".time());
 
-                    $confirm_mail_url = site_url("authentication/verify_signup?email=$request[email]&verification_key=$mail_hash");
+                    $confirm_mail_url = SIGNUP_VERIFY_URL_BASE."?email=$request[email]&verification_key=$mail_hash";
 
                     if($this->SignupModel->add( $request, $otp, $mail_hash )){
 
@@ -158,10 +135,10 @@ class Authentication extends BaseController
 
                     }else{
 
-                        $data['statusCode'] = 406;
+                        $data['statusCode'] = 5031;
                         $data['message'] = 'Signup Failed';
                         return $this->output
-                                    ->set_status_header(406)
+                                    ->set_status_header(503)
                                     ->set_content_type('application/json')
                                     ->set_output(json_encode($data));
 
@@ -174,7 +151,7 @@ class Authentication extends BaseController
         }
 
         return $this->output
-                    ->set_status_header(400)
+                    ->set_status_header(405)
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));
 		

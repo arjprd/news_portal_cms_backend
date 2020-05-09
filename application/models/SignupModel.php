@@ -10,10 +10,17 @@ class SignupModel extends CI_Model {
 
         }
 
-        public function get(){
+        public function getByEmail( $email ){
 
-            $query = $this->db->get('signup');
-            return $query->result_array();
+            $this->db->where( 'email_id', $email );
+            $query = $this->db->get( 'signup' );
+
+            $result = $query->result_array();
+
+            if ( count( $result ) )
+                return $result[0];
+
+            return false;
 
         }
 
@@ -88,6 +95,14 @@ class SignupModel extends CI_Model {
                 return $deleted;
 
             return false;
+
+        }
+
+        public function remove( $email ) {
+
+            $this->db->where( 'email_id', $email );
+    
+            return $this->db->delete( 'signup' );
 
         }
 

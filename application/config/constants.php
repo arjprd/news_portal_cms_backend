@@ -98,3 +98,14 @@ define('TEMP_DATABASE_DATABASE', 'news_portal_temp');
 
 define('CONFIRM_MAIL_API_URL', 'http://mailer.th-server.net');
 define('OTP_API_URL', 'http://otp.th-server.net');
+
+define('SIGNUP_VERIFY_URL_BASE', 'http://localhost/account/verify/signup');
+define('FORGOT_VERIFY_URL_BASE', 'http://localhost');
+
+define("JWT_API_KEY", "MIIBITCBzAIBADBnMQswCQYDVQQGEwJJTjEPMA0GA1UECAwGS2VyYWxhMQ8wDQYD
+VQQHDAZNdW1iYWkxJTAjBgNVBAoMHFRvdGFsQmluYXJ5IFRlY2hub2xvZ2llcyBM
+TFAxDzANBgNVBAsMBk11bWJhaTBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQCx8N+J
+w5GdR7Rlt6zF6byZLr1x3LthOyKTKAFNUc7/woN92NoWuhl8nlUt56VvBstrjhIq
+BByTTH8CclKhe6ABAgMBAAGgADANBgkqhkiG9w0BAQsFAANBAJWywVLTjrLpsCMl
+Sax1xOyUmv8Dmgi9fnHVtzajUC+fhjpktinavaZvbK/jxTxCNd7dgkqni1zjmLJ4
+PVZWDvo=");

@@ -68,4 +68,51 @@
 		fclose($fp);
 		return $result;
 		
-	}
+  }
+  
+  function isMethod( $type ){
+
+		if( $_SERVER['REQUEST_METHOD'] == $type ){
+
+      $request_data;
+
+      parse_str(file_get_contents("php://input"), $request_data);
+
+			return count($request_data) > 0? $request_data: true;
+
+		}
+
+		return false;
+
+  }
+  
+  function access_token_check(){
+
+    $data = [
+			'statusCode' => 4010,
+			'message' => 'Not authorized to use this API'
+    ];
+
+    if( empty($_SERVER['HTTP_ACCESS_TOKEN']) ){
+
+      http_response_code ( 401 );
+      header("Content-Type: application/json");
+      echo json_encode($data);
+      exit();
+
+    }
+
+    $access_token = jwt_helper::verify_token( $_SERVER['HTTP_ACCESS_TOKEN'] );
+
+    if( !$access_token ){
+
+      http_response_code ( 401 );
+      header("Content-Type: application/json");
+      $data['statusCode'] = 4011;
+      $data['message'] = "Invalid Token";
+      echo json_encode($data);
+      exit();
+
+    }
+
+  }
